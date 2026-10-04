@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 1 — Would (Invitaciones y Peticiones)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    color: #1a202c;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    padding: 30px 40px;
+  }
+  h1 {
+    text-align: center;
+    color: #2b6cb0;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #718096;
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
+  /* Pantalla de acceso */
+  #loginScreen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #loginScreen h2 { color: #2b6cb0; margin-bottom: 15px; }
+  #loginScreen p { color: #4a5568; margin-bottom: 20px; }
+  #accessInput {
+    font-size: 2rem;
+    text-align: center;
+    letter-spacing: 12px;
+    width: 220px;
+    padding: 12px;
+    border: 3px solid #cbd5e0;
+    border-radius: 12px;
+    outline: none;
+    transition: border 0.3s;
+  }
+  #accessInput:focus { border-color: #2b6cb0; }
+  #loginBtn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 14px 50px;
+    font-size: 1.1rem;
+    background: #2b6cb0;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+  }
+  #loginBtn:hover { background: #2c5282; transform: scale(1.02); }
+  #loginError {
+    color: #e53e3e;
+    margin-top: 15px;
+    font-weight: 600;
+    display: none;
+  }
+  /* Aviso Blogger */
+  .blogger-notice {
+    background: #fefcbf;
+    border-left: 6px solid #d69e2e;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    color: #744210;
+    font-size: 0.98rem;
+  }
+  .blogger-notice strong { color: #975a16; }
+  /* Contenido */
+  #mainContent { display: none; }
+  .section-box {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 25px;
+  }
+  .section-box h2 {
+    color: #2b6cb0;
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed #bee3f8;
+    padding-bottom: 8px;
+  }
+  .explain-block {
+    background: #ebf8ff;
+    border-left: 6px solid #3182ce;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  .explain-block h3 { color: #2c5282; margin-bottom: 8px; font-size: 1.05rem; }
+  .explain-block p { margin-bottom: 6px; color: #2d3748; }
+  .example {
+    background: #ffffff;
+    border: 1px solid #bee3f8;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    font-style: italic;
+    color: #2c5282;
+  }
+  .formula {
+    background: #2d3748;
+    color: #f7fafc;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    margin: 10px 0;
+    font-size: 0.95rem;
+  }
+  .question {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+  }
+  .question .q-num {
+    font-weight: 700;
+    color: #2b6cb0;
+    margin-right: 6px;
+  }
+  .question input[type="text"] {
+    border: none;
+    border-bottom: 2px solid #a0aec0;
+    padding: 4px 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: transparent;
+    outline: none;
+    min-width: 180px;
+    transition: border 0.3s;
+  }
+  .question input[type="text"]:focus { border-bottom-color: #2b6cb0; }
+  .radio-group {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  .radio-group input[type="radio"] {
+    accent-color: #2b6cb0;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+  /* Unir columnas */
+  .match-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .match-row .col-a {
+    flex: 1;
+    min-width: 200px;
+    font-weight: 500;
+    color: #2d3748;
+  }
+  .match-row select {
+    padding: 8px 12px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    min-width: 250px;
+  }
+  .match-row select:focus { border-color: #2b6cb0; }
+  /* Ordenar palabras */
+  .order-words {
+    font-family: 'Courier New', monospace;
+    background: #edf2f7;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 0.95rem;
+  }
+  /* Botones */
+  .btn {
+    display: inline-block;
+    padding: 12px 35px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    font-weight: 600;
+  }
+  .btn-primary { background: #2b6cb0; color: white; }
+  .btn-primary:hover { background: #2c5282; transform: scale(1.02); }
+  .btn-success { background: #38a169; color: white; }
+  .btn-success:hover { background: #2f855a; transform: scale(1.02); }
+  .btn-center { text-align: center; margin: 25px 0 10px; }
+  /* Resultados */
+  #resultsScreen {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  #resultsScreen h2 { color: #2b6cb0; margin-bottom: 15px; }
+  .score-box {
+    background: #ebf8ff;
+    border-radius: 14px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 500px;
+  }
+  .score-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #bee3f8;
+    font-size: 1.05rem;
+  }
+  .score-item:last-child { border-bottom: none; font-weight: 700; color: #2b6cb0; font-size: 1.15rem; }
+  .feedback { margin-top: 10px; font-weight: 600; }
+  .correct { color: #38a169; }
+  .incorrect { color: #e53e3e; }
+  @media (max-width: 600px) {
+    .container { padding: 20px 18px; }
+    h1 { font-size: 1.4rem; }
+    .match-row { flex-direction: column; align-items: flex-start; }
+    .match-row select { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ============ PANTALLA DE ACCESO ============ -->
+  <div id="loginScreen">
+    <h1>🔐 Sesión 1 — Would</h1>
+    <p class="subtitle">Invitaciones y peticiones de instrucciones</p>
+    <p>Ingresa el código de acceso de 4 dígitos:</p>
+    <input type="password" id="accessInput" maxlength="4" inputmode="numeric" placeholder="••••">
+    <button id="loginBtn" onclick="checkAccess()">ENTRAR</button>
+    <p id="loginError">❌ Código incorrecto. Intenta de nuevo.</p>
+  </div>
+
+  <!-- ============ CONTENIDO PRINCIPAL ============ -->
+  <div id="mainContent">
+
+    <div class="blogger-notice">
+      📝 <strong>Instrucciones importantes:</strong><br>
+      1. Contesta este ejercicio en el <strong>blog de Blogger</strong>.<br>
+      2. Escribe tus respuestas con <strong>tinta azul</strong> en tu cuaderno.<br>
+      3. Al terminar, presiona <strong>"VER RESULTADOS"</strong>.
+    </div>
+
+    <h1>📘 SESIÓN 1 — USO DE "WOULD"</h1>
+    <p class="subtitle">Invitaciones · Peticiones de instrucciones y direcciones</p>
+
+    <!-- ===== EXPLICACIÓN ===== -->
+    <div class="section-box">
+      <h2>📖 EXPLICACIÓN: USE OF "WOULD"</h2>
+
+      <p><strong>Would</strong> es un verbo modal que se usa para <strong>hacer invitaciones</strong> y <strong>pedir instrucciones o direcciones</strong> de forma <strong>cortés</strong>.</p>
+
+      <div class="explain-block">
+        <h3>1️⃣ Invitaciones — <em>Would you like to...?</em></h3>
+        <p>Se usa para <strong>invitar</strong> a alguien a hacer algo.</p>
+        <div class="formula">Would you like to + verbo en infinitivo + complemento?</div>
+        <div class="example">✅ Would you like to watch a movie? → ¿Te gustaría ver una película?</div>
+        <div class="example">✅ Would you like to have dinner with us? → ¿Te gustaría cenar con nosotros?</div>
+        <div class="example">✅ Would you like to go to the park? → ¿Te gustaría ir al parque?</div>
+        <p style="margin-top:10px;"><strong>Respuestas:</strong></p>
+        <div class="example">✔️ Yes, I'd love to.</div>
+        <div class="example">❌ No, thanks. Maybe another time.</div>
+      </div>
+
+      <div class="explain-block">
+        <h3>2️⃣ Pedir instrucciones o direcciones — <em>Would you tell me...?</em></h3>
+        <p>Se usa para <strong>pedir información</strong> de forma educada: cómo llegar a un lugar o cómo hacer algo.</p>
+        <div class="formula">Would you tell me + how to / where / how I can + verbo?</div>
+        <div class="example">✅ Would you tell me how to get to the station? → ¿Me dirías cómo llegar a la estación?</div>
+        <div class="example">✅ Would you tell me where the bathroom is? → ¿Me dirías dónde está el baño?</div>
+        <div class="example">✅ Would you tell me how to open this box? → ¿Me dirías cómo abrir esta caja?</div>
+        <p style="margin-top:10px;"><strong>Respuestas:</strong></p>
+        <div class="example">✔️ Of course. Go straight and turn left.</div>
+        <div class="example">✔️ Sure. It's on the second floor.</div>
+      </div>
+
+      <div class="explain-block" style="background:#fff5f5; border-left-color:#e53e3e;">
+        <h3>⚠️ Diferencia clave</h3>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+          <tr style="background:#fed7d7;">
+            <th style="padding:8px; text-align:left; border:1px solid #feb2b2;">Estructura</th>
+            <th style="padding:8px; text-align:left; border:1px solid #feb2b2;">Uso</th>
+            <th style="padding:8px; text-align:left; border:1px solid #feb2b2;">Ejemplo</th>
+          </tr>
+          <tr>
+            <td style="padding:8px; border:1px solid #feb2b2;"><code>Would you like to...</code></td>
+            <td style="padding:8px; border:1px solid #feb2b2;">Invitar</td>
+            <td style="padding:8px; border:1px solid #feb2b2;"><em>Would you like to dance?</em></td>
+          </tr>
+          <tr>
+            <td style="padding:8px; border:1px solid #feb2b2;"><code>Would you tell me...</code></td>
+            <td style="padding:8px; border:1px solid #feb2b2;">Pedir info/instrucciones</td>
+            <td style="padding:8px; border:1px solid #feb2b2;"><em>Would you tell me how to dance?</em></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== APARTADO 1: IDENTIFICAR ===== -->
+    <div class="section-box">
+      <h2>🔹 APARTADO 1 — ¿Invitación (I) o Pedir instrucción (P)?</h2>
+      <p style="margin-bottom:12px; color:#4a5568;">Lee cada oración y selecciona si es una <strong>invitación</strong> o una <strong>petición de instrucción/dirección</strong>.</p>
+      <div id="apartado1"></div>
+    </div>
+
+    <!-- ===== APARTADO 2: COMPLETAR ===== -->
+    <div class="section-box">
+      <h2>🔹 APARTADO 2 — Completa con <em>Would you like to</em> o <em>Would you tell me</em></h2>
+      <p style="margin-bottom:12px; color:#4a5568;">Completa cada diálogo con la estructura correcta.</p>
+      <div id="apartado2"></div>
+    </div>
+
+    <!-- ===== APARTADO 3: UNIR COLUMNAS ===== -->
+    <div class="section-box">
+      <h2>🔹 APARTADO 3 — Une las dos columnas</h2>
+      <p style="margin-bottom:12px; color:#4a5568;">Selecciona la opción de la columna B que complete correctamente cada oración.</p>
+      <div id="apartado3"></div>
+    </div>
+
+    <!-- ===== APARTADO 4: ORDENAR ===== -->
+    <div class="section-box">
+      <h2>🔹 APARTADO 4 — Ordena las palabras</h2>
+      <p style="margin-bottom:12px; color:#4a5568;">Escribe la oración correctamente ordenada.</p>
+      <div id="apartado4"></div>
+    </div>
+
+    <!-- ===== BOTÓN RESULTADOS ===== -->
+    <div class="btn-center">
+      <button class="btn btn-success" onclick="showResults()">✅ VER RESULTADOS</button>
+    </div>
+
+  </div>
+
+  <!-- ============ PANTALLA DE RESULTADOS ============ -->
+  <div id="resultsScreen">
+    <h2>🏆 Resultados — Sesión 1</h2>
+    <div class="score-box" id="scoreBox"></div>
+    <div class="btn-center">
+      <button class="btn btn-primary" onclick="location.reload()">🔄 Volver al inicio</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CÓDIGO DE ACCESO
+   ============================================================ */
+const ACCESS_CODE = "2026";
+let attempts = 0;
+
+function checkAccess() {
+  const input = document.getElementById('accessInput').value.trim();
+  const error = document.getElementById('loginError');
+  if (input === ACCESS_CODE) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  } else {
+    attempts++;
+    error.style.display = 'block';
+    error.textContent = `❌ Código incorrecto. Intento ${attempts}. Intenta de nuevo.`;
+    document.getElementById('accessInput').value = '';
+    document.getElementById('accessInput').focus();
+  }
+}
+document.getElementById('accessInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkAccess();
+});
+
+/* ============================================================
+   DATOS DE LOS APARTADOS
+   ============================================================ */
+
+// APARTADO 1 — Identificar (I = invitación, P = pedir instrucción)
+const APARTADO1 = [
+  { text: "Would you like to come to my party?", answer: "I" },
+  { text: "Would you tell me how to get to the airport?", answer: "P" },
+  { text: "Would you like to try some Mexican food?", answer: "I" },
+  { text: "Would you tell me where the library is?", answer: "P" },
+  { text: "Would you like to play soccer with us?", answer: "I" },
+  { text: "Would you tell me how to use this app?", answer: "P" },
+  { text: "Would you like to have a cup of coffee?", answer: "I" },
+  { text: "Would you tell me how I can find the museum?", answer: "P" }
+];
+
+// APARTADO 2 — Completar
+const APARTADO2 = [
+  { before: "A:", text: "______ go to the cinema tonight?", after: "B: Sure! I'd love to.", answer: "Would you like to" },
+  { before: "A:", text: "______ how to get to the bus station?", after: "B: Yes, go straight and turn right.", answer: "Would you tell me" },
+  { before: "A:", text: "______ have some tea?", after: "B: No, thanks. I'm fine.", answer: "Would you like to" },
+  { before: "A:", text: "______ where the supermarket is?", after: "B: Of course. It's next to the bank.", answer: "Would you tell me" },
+  { before: "A:", text: "______ play video games with me?", after: "B: Sorry, I can't. I have homework.", answer: "Would you like to" },
+  { before: "A:", text: "______ how to open this file?", after: "B: Sure, click on the icon.", answer: "Would you tell me" },
+  { before: "A:", text: "______ go swimming this weekend?", after: "B: That sounds great!", answer: "Would you like to" },
+  { before: "A:", text: "______ where the train station is?", after: "B: Yes, it's two blocks away.", answer: "Would you tell me" }
+];
+
+// APARTADO 3 — Unir columnas
+const APARTADO3 = [
+  { a: "1. Would you like", correct: "to watch a movie?", options: ["to watch a movie?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] },
+  { a: "2. Would you tell me", correct: "how to get to the park?", options: ["to watch a movie?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] },
+  { a: "3. Would you like", correct: "to have dinner with us?", options: ["to have dinner with us?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] },
+  { a: "4. Would you tell me", correct: "where the hotel is?", options: ["to watch a movie?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] },
+  { a: "5. Would you like", correct: "to go swimming?", options: ["to go swimming?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] },
+  { a: "6. Would you tell me", correct: "how to use this machine?", options: ["to watch a movie?", "how to get to the park?", "where the hotel is?", "how to use this machine?"] }
+];
+
+// APARTADO 4 — Ordenar palabras
+const APARTADO4 = [
+  { words: "/ like / would / I / to have / dinner", answer: "I would like to have dinner." },
+  { words: "/ you / would / tell me / how to get / to the station", answer: "Would you tell me how to get to the station?" },
+  { words: "/ you / like / would / to go / to the beach", answer: "Would you like to go to the beach?" },
+  { words: "/ tell me / would / you / where / the bathroom is", answer: "Would you tell me where the bathroom is?" },
+  { words: "/ like / would / you / to play / tennis", answer: "Would you like to play tennis?" },
+  { words: "/ would / you / tell me / how to use / this computer", answer: "Would you tell me how to use this computer?" }
+];
+
+/* ============================================================
+   RENDERIZADO
+   ============================================================ */
+function renderApartado1() {
+  const c = document.getElementById('apartado1');
+  c.innerHTML = APARTADO1.map((q, i) => `
+    <div class="question">
+      <span class="q-num">${i + 1}.</span> ${q.text}
+      <div class="radio-group">
+        <label><input type="radio" name="a1_${i}" value="I"> I (Invitación)</label>
+        <label><input type="radio" name="a1_${i}" value="P"> P (Pedir instrucción/dirección)</label>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderApartado2() {
+  const c = document.getElementById('apartado2');
+  c.innerHTML = APARTADO2.map((q, i) => `
+    <div class="question">
+      <span class="q-num">${i + 1}.</span> ${q.before}
+      <input type="text" id="a2_${i}" placeholder="escribe aquí...">
+      ${q.text.replace('______', '')} <br>
+      <em style="color:#718096; font-size:0.9rem;">${q.after}</em>
+    </div>
+  `).join('');
+}
+
+function renderApartado3() {
+  const c = document.getElementById('apartado3');
+  c.innerHTML = APARTADO3.map((q, i) => `
+    <div class="match-row">
+      <div class="col-a">${q.a}</div>
+      <select id="a3_${i}">
+        <option value="">— Selecciona —</option>
+        ${q.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+}
+
+function renderApartado4() {
+  const c = document.getElementById('apartado4');
+  c.innerHTML = APARTADO4.map((q, i) => `
+    <div class="question">
+      <span class="q-num">${i + 1}.</span>
+      <div class="order-words">${q.words}</div>
+      <input type="text" id="a4_${i}" placeholder="Escribe la oración ordenada..." style="width:100%; margin-top:6px;">
+    </div>
+  `).join('');
+}
+
+renderApartado1();
+renderApartado2();
+renderApartado3();
+renderApartado4();
+
+/* ============================================================
+   NORMALIZAR RESPUESTAS
+   ============================================================ */
+function normalize(str) {
+  return (str || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[.,!?;:¿¡"']/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/* ============================================================
+   CALIFICAR Y MOSTRAR RESULTADOS
+   ============================================================ */
+function showResults() {
+  let score1 = 0, score2 = 0, score3 = 0, score4 = 0;
+
+  // Apartado 1
+  APARTADO1.forEach((q, i) => {
+    const sel = document.querySelector(`input[name="a1_${i}"]:checked`);
+    if (sel && sel.value === q.answer) score1++;
+  });
+
+  // Apartado 2
+  APARTADO2.forEach((q, i) => {
+    const val = normalize(document.getElementById(`a2_${i}`).value);
+    if (val === normalize(q.answer)) score2++;
+  });
+
+  // Apartado 3
+  APARTADO3.forEach((q, i) => {
+    const val = document.getElementById(`a3_${i}`).value;
+    if (val === q.correct) score3++;
+  });
+
+  // Apartado 4
+  APARTADO4.forEach((q, i) => {
+    const val = normalize(document.getElementById(`a4_${i}`).value);
+    if (val === normalize(q.answer)) score4++;
+  });
+
+  const total = score1 + score2 + score3 + score4;
+  const max = APARTADO1.length + APARTADO2.length + APARTADO3.length + APARTADO4.length;
+  const pct = Math.round((total / max) * 100);
+
+  let msg = '';
+  if (pct >= 90) msg = '🏆 Excellent! You master "Would".';
+  else if (pct >= 75) msg = '🌟 Great job! Keep it up.';
+  else if (pct >= 60) msg = '👍 Good. Review the explanation.';
+  else msg = '📚 Keep practicing. Revisa la explicación.';
+
+  document.getElementById('scoreBox').innerHTML = `
+    <div class="score-item"><span>Apartado 1 (Identificar)</span><span>${score1} / ${APARTADO1.length}</span></div>
+    <div class="score-item"><span>Apartado 2 (Completar)</span><span>${score2} / ${APARTADO2.length}</span></div>
+    <div class="score-item"><span>Apartado 3 (Unir columnas)</span><span>${score3} / ${APARTADO3.length}</span></div>
+    <div class="score-item"><span>Apartado 4 (Ordenar)</span><span>${score4} / ${APARTADO4.length}</span></div>
+    <div class="score-item"><span>TOTAL</span><span>${total} / ${max} (${pct}%)</span></div>
+    <div class="feedback" style="margin-top:15px; font-size:1.1rem;">${msg}</div>
+  `;
+
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
